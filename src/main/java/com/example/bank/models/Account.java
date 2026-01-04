@@ -24,7 +24,7 @@ public class Account {
 
 	private Long balance = 0L;
 
-	private boolean isActive;
+	private boolean isActive = true;
 
 	@OneToOne
 	@JoinColumn(name = "customer_id", unique = true)
