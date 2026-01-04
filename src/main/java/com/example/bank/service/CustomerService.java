@@ -1,8 +1,10 @@
 package com.example.bank.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -47,7 +49,7 @@ public class CustomerService {
 		Account account = new Account();
 		account.setActive(true);
 		account.setCustomer(customer);
-
+		account.setAccountNumber("DEFAULT00000");
 		customer.setAccount(account);
 		customerRepository.save(customer);
 
@@ -75,4 +77,6 @@ public class CustomerService {
 		return customerRepository.findAll()
 				.stream().map(customerMapper::toDto).toList();
 	}
+
+	
 }

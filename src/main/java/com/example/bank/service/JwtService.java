@@ -5,15 +5,12 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.example.bank.dto.UserDto;
-import com.example.bank.exceptions.ResourceNotFoundException;
+import com.example.bank.models.Role;
 import com.example.bank.models.User;
 import com.example.bank.repositories.UserRepository;
 
@@ -30,7 +27,9 @@ public class JwtService {
 
     private final UserRepository userRepository;
 
-    public JwtService(UserRepository userRepository){
+    public JwtService(
+        UserRepository userRepository
+    ){
         this.userRepository = userRepository;
     }
 
@@ -73,6 +72,15 @@ public class JwtService {
                 Base64.getEncoder().encodeToString(SECRET_KEY.getBytes())
         );
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public void addUser(String username,Role role,Long refId,String pass){
+        User user = new User();
+        user.setUsername(username);
+        user.setRole(role);
+        user.setReferenceId(refId);
+        user.setPassword(pass);
+        userRepository.save(user);
     }
 }
 

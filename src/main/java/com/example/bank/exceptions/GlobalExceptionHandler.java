@@ -36,17 +36,9 @@ public class GlobalExceptionHandler {
             DataIntegrityViolationException ex,
             HttpServletRequest request) {
 
-        String message = "Duplicate value";
-
-        if (ex.getMostSpecificCause().getMessage().contains("email")) {
-            message = "Email already exists";
-        } else if (ex.getMostSpecificCause().getMessage().contains("mobile")) {
-            message = "Mobile number already exists";
-        }
-
         ApiError error = new ApiError(
                 HttpStatus.CONFLICT.value(),
-                message,
+                "Database Validation error :"+ ex.getMessage(),
                 request.getRequestURI()
         );
 

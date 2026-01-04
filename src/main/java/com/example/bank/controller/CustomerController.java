@@ -31,13 +31,14 @@ public class CustomerController{
 		this.customerService = customerService;
 	}
 
+	@PreAuthorize("hasAnyRole('EMPLOYEE','ADMIN')")
 	@PostMapping("/add-customer")
 	public CustomerDto addCustomer(@Valid @RequestBody CustomerDto customer) {
 		return customerService.createCustomer(customer);
 		
 	}
 
-	@PreAuthorize("hasRole('CUSTOMER')")
+	@PreAuthorize("hasAnyRole('EMPLOYEE','ADMIN')")
 	@GetMapping("/get-customers")
 	public List<CustomerDto> getCustomer() {
 		return customerService.getAllCustomers();

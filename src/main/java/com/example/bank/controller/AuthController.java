@@ -18,8 +18,12 @@ import org.springframework.security.core.Authentication;
 import com.example.bank.dto.AuthDto;
 import com.example.bank.dto.LoginRequest;
 import com.example.bank.service.JwtService;
+import com.example.bank.service.CustomUserDetailsService;
 
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/auth")
@@ -29,7 +33,11 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
+    private CustomUserDetailsService customUserDetailsService;
+
+    @Autowired
     private JwtService jwtService;
+
 
     @PostMapping("/login")
     public AuthDto login(@Valid @RequestBody LoginRequest request) {
@@ -45,6 +53,11 @@ public class AuthController {
         authDto.setToken(jwtService.generateToken(request.getUsername()));
         authDto.setStatus(HttpStatus.OK.value());
         return authDto;
+    }
+
+    @GetMapping("/admin/set-admin")
+    public Map<String,String> setAdmin() {
+        return customUserDetailsService.setupAdmin();
     }
     
 }

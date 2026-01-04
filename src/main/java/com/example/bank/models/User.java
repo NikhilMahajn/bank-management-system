@@ -34,5 +34,6 @@ public class User {
     private boolean active = true;
 
     private Long referenceId; 
+
 }
 

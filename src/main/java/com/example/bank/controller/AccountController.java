@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,27 +31,32 @@ public class AccountController {
 		this.accountService = accountService;
 	}
 	
+	@PreAuthorize("hasAnyRole('EMPLOYEE','ADMIN')")
 	@GetMapping("/get-accounts")
 	public List<AccountDto> getAllAccounts() {
 		return accountService.getAllAccounts();
 	}
 	
+	@PreAuthorize("hasAnyRole('EMPLOYEE','ADMIN')")
 	@GetMapping("/get-account/{account_id}")
 	public AccountDto getAccount(@PathVariable Long account_id) {
 		return accountService.getAccount(account_id);
 	}
 
+	@PreAuthorize("hasAnyRole('CUSTOMER')")
 	@GetMapping("/get-account")
 	public AccountDto getAccountByUsernamehandler() {
 		return accountService.getAccountByUsername();
 	}
 
+	@PreAuthorize("hasAnyRole('CUSTOMER')")
 	@PostMapping("/deposite")
 	public AccountDto depositMoney(@Valid @RequestBody AccountDto request) {
 		
 		return accountService.deposite(request);
 	}
 
+	@PreAuthorize("hasAnyRole('CUSTOMER')")
 	@PostMapping("/withdraw")
 	public WithdrawResponse postMethodName(@RequestBody AccountDto request) {
 		
