@@ -12,15 +12,21 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.example.bank.dto.AccountDto;
+import com.example.bank.dto.AccountStatDto;
+import com.example.bank.dto.ApiResponse;
+import com.example.bank.dto.TransferDto;
 import com.example.bank.dto.WithdrawResponse;
 import com.example.bank.exceptions.InsufficientBalanceException;
 import com.example.bank.exceptions.ResourceNotFoundException;
 import com.example.bank.mapper.AccountMapper;
 import com.example.bank.models.Account;
 import com.example.bank.models.Customer;
+import com.example.bank.models.Transaction;
+import com.example.bank.models.TransactionStatus;
 import com.example.bank.models.User;
 import com.example.bank.repositories.AccountRepository;
 import com.example.bank.repositories.CustomerRepository;
+import com.example.bank.repositories.TransactionRepository;
 import com.example.bank.repositories.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -36,17 +42,21 @@ public class AccountService {
 
 	private UserRepository userRepository;
 
+	private TransactionRepository transactionRepository;
+
 
 	public AccountService(AccountRepository accountRepository,
 						AccountMapper accountMapper,
 						UserRepository userRepository,
-						CustomerRepository customerRepository				
+						CustomerRepository customerRepository,
+						TransactionRepository transactionRepository			
 						){
 
 		this.accountRepository = accountRepository;
 		this.accountMapper = accountMapper;
 		this.userRepository = userRepository;
 		this.customerRepository = customerRepository;
+		this.transactionRepository = transactionRepository;
 	}
 
 	public List<AccountDto> getAllAccounts(){
@@ -120,6 +130,56 @@ public class AccountService {
 		withdrawResponse.setBalance(account.getBalance());
 		withdrawResponse.setWithdrawAmount(request.getBalance());
 		return withdrawResponse;
+	}
+
+	public AccountStatDto getAccountStats(){
+		AccountStatDto accountStatDto = new AccountStatDto();
+
+		accountStatDto.setTotalAccounts(accountRepository.count());
+		accountStatDto.setActiveAccounts(accountRepository.countByIsActiveTrue());
+		accountStatDto.setTotalAmount(accountRepository.sumBalanceByIsActive(true));
+
+		return accountStatDto;
+	}
+
+	@Transactional
+	public ApiResponse transferMoney(TransferDto transferRequest) {
+		Account sender = getAccountByToken();
+
+		if (transferRequest.getAmount() <= 0) {
+			throw new IllegalArgumentException("Amount must be greater than 0");
+		}
+
+		Account receiver = accountRepository.findByAccountNumber(transferRequest.getRecieverAccount())
+				.orElseThrow(() -> new ResourceNotFoundException("Receiver account not found"));
+
+		if (sender.getId().equals(receiver.getId())) {
+			throw new IllegalArgumentException("Cannot transfer to same account");
+		}
+
+		// Create transaction
+		Transaction tx = new Transaction();
+		tx.setSenderAccount(sender);
+		tx.setRecieverAccount(receiver);
+		tx.setAmount(transferRequest.getAmount());
+
+		// Check balance
+		if (sender.getBalance() < transferRequest.getAmount()) {
+			tx.setStatus(TransactionStatus.FAILED);
+			transactionRepository.save(tx);
+			throw new InsufficientBalanceException("Insufficient funds");
+		}
+
+		// Apply transfer
+		sender.setBalance(sender.getBalance() - transferRequest.getAmount());
+		receiver.setBalance(receiver.getBalance() + transferRequest.getAmount());
+		tx.setStatus(TransactionStatus.SUCCESS);
+
+		accountRepository.save(sender);
+		accountRepository.save(receiver);
+		transactionRepository.save(tx);
+
+		return new ApiResponse("SUCCESS", "Money transferred successfully");
 	}
 
 }

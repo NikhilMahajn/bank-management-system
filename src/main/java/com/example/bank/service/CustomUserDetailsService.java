@@ -60,6 +60,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         user.setPassword(passwordEncoder.encode(adminPassword));
         user.setRole(Role.ROLE_ADMIN);
 
+        userRepository.save(user);
+
         Map<String,String> response = new HashMap<>();
         response.put("Status","Admin user created");
         return response;

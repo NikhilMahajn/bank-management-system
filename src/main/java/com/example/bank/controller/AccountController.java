@@ -4,6 +4,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bank.dto.AccountDto;
+import com.example.bank.dto.AccountStatDto;
+import com.example.bank.dto.ApiResponse;
+import com.example.bank.dto.TransferDto;
 import com.example.bank.dto.WithdrawResponse;
 import com.example.bank.service.AccountService;
 
@@ -62,6 +65,19 @@ public class AccountController {
 		
 		return accountService.withdraw(request);
 	}
+
+	@PostMapping("/transfer")
+	public ApiResponse transfer(@RequestBody TransferDto transferRequest) {
+		return accountService.transferMoney(transferRequest);
+	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE')")
+	@GetMapping("/stats")
+	public AccountStatDto getAccountStatsHandler() {
+		return accountService.getAccountStats();
+	}
+
+
 	
 		
 	

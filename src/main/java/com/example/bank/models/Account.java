@@ -1,11 +1,14 @@
 package com.example.bank.models;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,4 +32,11 @@ public class Account {
 	@OneToOne
 	@JoinColumn(name = "customer_id", unique = true)
 	private Customer customer;
+
+	@OneToMany(mappedBy="senderAccount")
+    private List<Transaction> sentTransactions;
+
+    @OneToMany(mappedBy="recieverAccount")
+    private List<Transaction> receivedTransactions;
+
 }
