@@ -23,6 +23,7 @@ import com.example.bank.models.Account;
 import com.example.bank.models.Customer;
 import com.example.bank.models.Transaction;
 import com.example.bank.models.TransactionStatus;
+import com.example.bank.models.TransactionType;
 import com.example.bank.models.User;
 import com.example.bank.repositories.AccountRepository;
 import com.example.bank.repositories.CustomerRepository;

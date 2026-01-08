@@ -32,3 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 
+scp -i bank.pem target/bank-0.0.1-SNAPSHOT.jar ubuntu@13.201.75.209:/home/ubuntu/
