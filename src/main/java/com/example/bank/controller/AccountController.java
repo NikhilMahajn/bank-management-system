@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.bank.dto.AccountDto;
 import com.example.bank.dto.AccountStatDto;
 import com.example.bank.dto.ApiResponse;
+import com.example.bank.dto.BlockAccountDto;
 import com.example.bank.dto.TransferDto;
 import com.example.bank.dto.WithdrawResponse;
 import com.example.bank.service.AccountService;
@@ -77,6 +78,12 @@ public class AccountController {
 		return accountService.getAccountStats();
 	}
 
+	@PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE')")
+	@PostMapping("/block")
+	public ApiResponse blockAccountHandler(@RequestBody BlockAccountDto account) {
+		return accountService.blockAccount(account.getAccountNumber());
+	}
+	
 
 	
 		

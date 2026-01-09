@@ -12,4 +12,6 @@ public class AccountStatDto {
 	private Long activeAccounts;
 
 	private Long totalAmount;
+
+	private Long totalTransactions;
 }

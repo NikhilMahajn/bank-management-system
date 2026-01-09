@@ -9,9 +9,14 @@ import com.example.bank.service.EmployeeService;
 
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -32,7 +37,13 @@ public class EmployeeController {
 		return employeeService.createEmployee(employeeDto);
 		
 	}
-	
 
+	@PreAuthorize("hasRole('ADMIN')")
+	@GetMapping("/get-employees")
+	public List<EmployeeDto> getEmployees() {
+		return employeeService.getAllEmployee();
+	}
+	
+	
 
 }

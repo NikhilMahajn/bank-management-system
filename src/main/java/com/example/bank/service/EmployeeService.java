@@ -1,5 +1,7 @@
 package com.example.bank.service;
 
+import java.util.List;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -56,6 +58,11 @@ public class EmployeeService {
 
 		return employeeMapper.toDto(employee);
 
+	}
+
+	public List<EmployeeDto> getAllEmployee(){
+		List<Employee> employees = employeeRepository.findAll();
+		return employees.stream().map(employeeMapper::toDto).toList();
 	}
 
 

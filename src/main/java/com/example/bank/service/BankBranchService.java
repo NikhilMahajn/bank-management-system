@@ -1,5 +1,7 @@
 package com.example.bank.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.example.bank.dto.BankBranchDto;
@@ -53,5 +55,10 @@ public class BankBranchService {
 		employee.setBankBranch(branch);
 
     }
+
+	public List<BankBranchDto> getAllBranches(){
+		List<BankBranch> branches = bankBranchRepository.findAll().stream().toList();
+		return branches.stream().map(bankBranchMapper::toDto).toList();
+	}
 
 }

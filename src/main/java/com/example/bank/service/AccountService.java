@@ -46,11 +46,12 @@ public class AccountService {
 	private TransactionRepository transactionRepository;
 
 
+
 	public AccountService(AccountRepository accountRepository,
 						AccountMapper accountMapper,
 						UserRepository userRepository,
 						CustomerRepository customerRepository,
-						TransactionRepository transactionRepository			
+						TransactionRepository transactionRepository
 						){
 
 		this.accountRepository = accountRepository;
@@ -139,6 +140,7 @@ public class AccountService {
 		accountStatDto.setTotalAccounts(accountRepository.count());
 		accountStatDto.setActiveAccounts(accountRepository.countByIsActiveTrue());
 		accountStatDto.setTotalAmount(accountRepository.sumBalanceByIsActive(true));
+		accountStatDto.setTotalTransactions(transactionRepository.count());
 
 		return accountStatDto;
 	}
@@ -181,6 +183,16 @@ public class AccountService {
 		transactionRepository.save(tx);
 
 		return new ApiResponse("SUCCESS", "Money transferred successfully");
+	}
+
+	@Transactional
+	public ApiResponse blockAccount(String accountNo){
+		Account account = accountRepository.findByAccountNumber(accountNo).orElseThrow(
+			()-> new ResourceNotFoundException("Account not found with ACN "+accountNo));
+		account.setActive(false);
+		accountRepository.save(account);
+		return new ApiResponse("SUCCESS", accountNo+" Account Blocked Successful");
+		
 	}
 
 }
