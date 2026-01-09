@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bank.dto.CustomerDto;
 import com.example.bank.dto.EmployeeDto;
+import com.example.bank.dto.EmployeeRequestDto;
 import com.example.bank.service.EmployeeService;
 
 import jakarta.validation.Valid;
@@ -32,7 +33,7 @@ public class EmployeeController {
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("/add-employee")
-	public EmployeeDto addEmployee(@RequestBody EmployeeDto employeeDto) {
+	public EmployeeDto addEmployee(@RequestBody EmployeeRequestDto employeeDto) {
 
 		return employeeService.createEmployee(employeeDto);
 		

@@ -45,9 +45,9 @@ public class BankBranchService {
     }
 
 	@Transactional
-    public void addEmployeeToBranch(Long branchId, Employee employee) {
+    public void addEmployeeToBranch(String branchCode, Employee employee) {
 
-        BankBranch branch = bankBranchRepository.findById(branchId)
+        BankBranch branch = bankBranchRepository.findByBranchCode(branchCode)
             .orElseThrow(() ->
                 new ResourceNotFoundException("Branch not found"));
 

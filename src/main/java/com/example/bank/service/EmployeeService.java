@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.bank.dto.CustomerDto;
 import com.example.bank.dto.EmployeeDto;
+import com.example.bank.dto.EmployeeRequestDto;
 import com.example.bank.mapper.EmployeeMapper;
 import com.example.bank.models.Employee;
 import com.example.bank.models.Role;
@@ -45,10 +46,15 @@ public class EmployeeService {
 	}
 
 	@Transactional
-	public EmployeeDto createEmployee(EmployeeDto request) {
-		Employee employee = employeeMapper.toEntity(request);
+	public EmployeeDto createEmployee(EmployeeRequestDto request) {
+		EmployeeDto employeeDto = new EmployeeDto();
+		employeeDto.setEmployeeName(request.getEmployeeName());
+		employeeDto.setEmail(request.getEmail());
+		employeeDto.setMobileNumber(request.getMobileNumber());
 
-		bankBranchService.addEmployeeToBranch(1L, employee);
+		Employee employee = employeeMapper.toEntity(employeeDto);
+
+		bankBranchService.addEmployeeToBranch(request.getBranchCode(), employee);
 
 		employeeRepository.save(employee);
 
