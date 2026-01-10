@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.example.bank.exceptions.ResourceNotFoundException;
 import com.example.bank.models.Role;
 import com.example.bank.models.User;
 import com.example.bank.repositories.UserRepository;
@@ -81,6 +82,12 @@ public class JwtService {
         user.setReferenceId(refId);
         user.setPassword(pass);
         userRepository.save(user);
+    }
+    public boolean removeUser(String username){
+        User user = userRepository.findByUsername(username)
+        .orElseThrow(() -> new ResourceNotFoundException(username +" Not Found"));
+        userRepository.delete(user);
+        return true;
     }
 }
 

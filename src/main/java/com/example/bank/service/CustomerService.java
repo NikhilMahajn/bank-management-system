@@ -13,6 +13,7 @@ import com.example.bank.dto.CustomerDto;
 import com.example.bank.exceptions.DuplicateResourceException;
 import com.example.bank.mapper.CustomerMapper;
 import com.example.bank.models.Account;
+import com.example.bank.models.BankBranch;
 import com.example.bank.models.Customer;
 import com.example.bank.models.Role;
 import com.example.bank.models.User;
@@ -34,6 +35,12 @@ public class CustomerService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	@Autowired
+	private BankBranchService bankBranchService;
+
+	@Autowired
+	private AccountService accountService;
+
 
 	public CustomerService(CustomerRepository customerRepository, CustomerMapper customerMapper,UserRepository userRepository){
 		this.customerRepository = customerRepository;
@@ -51,12 +58,15 @@ public class CustomerService {
 		account.setCustomer(customer);
 		account.setAccountNumber("DEFAULT00000");
 		customer.setAccount(account);
+		
+		BankBranch branch = accountService.getAccountBranchByToken();
+		bankBranchService.addAccountToBranch(branch.getBranchCode(), account);
+		
 		customerRepository.save(customer);
 
 		String accountNumber = generateAccountNumber(account.getId());
         account.setAccountNumber(accountNumber);
-
-
+		
 		User user = new User();
 		user.setUsername(customerRequest.getEmail());
 		user.setReferenceId(customer.getId());

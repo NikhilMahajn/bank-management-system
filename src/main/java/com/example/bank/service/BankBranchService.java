@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.example.bank.dto.BankBranchDto;
 import com.example.bank.exceptions.ResourceNotFoundException;
 import com.example.bank.mapper.BankBranchMapper;
+import com.example.bank.models.Account;
 import com.example.bank.models.BankBranch;
 import com.example.bank.models.Employee;
 import com.example.bank.repositories.BankBranchRepository;
@@ -53,6 +54,18 @@ public class BankBranchService {
 
         branch.addEmployee(employee);
 		employee.setBankBranch(branch);
+
+    }
+
+	@Transactional
+    public void addAccountToBranch(String branchCode, Account newAccount) {
+
+        BankBranch branch = bankBranchRepository.findByBranchCode(branchCode)
+            .orElseThrow(() ->
+                new ResourceNotFoundException("Branch not found"));
+
+        branch.addAccount(newAccount);
+		newAccount.setBankBranch(branch);
 
     }
 

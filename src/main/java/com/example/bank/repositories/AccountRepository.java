@@ -32,6 +32,14 @@ public interface AccountRepository extends JpaRepository<Account,Long>{
 
 	boolean existsByAccountNumber(String account);
 
-
+	@Query("""
+		SELECT 
+			COUNT(a.id),
+			SUM(CASE WHEN a.isActive = true THEN 1 ELSE 0 END),
+			COALESCE(SUM(a.balance), 0)
+		FROM Account a
+		WHERE a.bankBranch.id = :branchId
+	""")
+	List<Object[]> getStatsForBranch(@Param("branchId") Long branchId);
 
 }

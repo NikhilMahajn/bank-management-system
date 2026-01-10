@@ -20,12 +20,15 @@ import com.example.bank.exceptions.InsufficientBalanceException;
 import com.example.bank.exceptions.ResourceNotFoundException;
 import com.example.bank.mapper.AccountMapper;
 import com.example.bank.models.Account;
+import com.example.bank.models.BankBranch;
 import com.example.bank.models.Customer;
+import com.example.bank.models.Employee;
 import com.example.bank.models.Transaction;
 import com.example.bank.models.TransactionStatus;
 import com.example.bank.models.TransactionType;
 import com.example.bank.models.User;
 import com.example.bank.repositories.AccountRepository;
+import com.example.bank.repositories.BankBranchRepository;
 import com.example.bank.repositories.CustomerRepository;
 import com.example.bank.repositories.TransactionRepository;
 import com.example.bank.repositories.UserRepository;
@@ -45,7 +48,8 @@ public class AccountService {
 
 	private TransactionRepository transactionRepository;
 
-
+	@Autowired
+	private EmployeeService employeeService;
 
 	public AccountService(AccountRepository accountRepository,
 						AccountMapper accountMapper,
@@ -94,6 +98,21 @@ public class AccountService {
 			.orElseThrow(() ->
 				new ResourceNotFoundException("User account not registered"));
 		return account;
+	}
+	
+	public BankBranch getAccountBranchByToken(){
+		Authentication authentication =
+				SecurityContextHolder.getContext().getAuthentication();
+
+		String username = authentication.getName(); 
+
+		User user = userRepository.findByUsername(username).orElseThrow(() ->
+				new ResourceNotFoundException("User not found with username: " + username));
+
+		Employee employee = employeeService.getEmployeeById(user.getReferenceId());
+		System.out.println(employee.getBankBranch().getId());
+		
+		return employee.getBankBranch();
 	}
 
 	public AccountDto getAccountByUsername(){
@@ -145,6 +164,22 @@ public class AccountService {
 		return accountStatDto;
 	}
 
+	public AccountStatDto getAccountStatsBranch(){
+		AccountStatDto accountStatDto = new AccountStatDto();
+		
+		BankBranch branch = getAccountBranchByToken();
+		Object[] row = accountRepository.getStatsForBranch(branch.getId()).get(0);
+
+		accountStatDto.setTotalAccounts(((Number) row[0]).longValue());
+		accountStatDto.setActiveAccounts(((Number) row[1]).longValue());
+		accountStatDto.setTotalAmount(((Number) row[2]).longValue());
+		accountStatDto.setTotalTransactions(transactionRepository.count());
+
+		return accountStatDto;
+	}
+
+
+
 	@Transactional
 	public ApiResponse transferMoney(TransferDto transferRequest) {
 		Account sender = getAccountByToken();
@@ -185,6 +220,7 @@ public class AccountService {
 		return new ApiResponse("SUCCESS", "Money transferred successfully");
 	}
 
+
 	@Transactional
 	public ApiResponse blockAccount(String accountNo){
 		Account account = accountRepository.findByAccountNumber(accountNo).orElseThrow(
@@ -194,5 +230,7 @@ public class AccountService {
 		return new ApiResponse("SUCCESS", accountNo+" Account Blocked Successful");
 		
 	}
+
+
 
 }

@@ -14,6 +14,7 @@ public class CustomerMapper {
 				customer.getCustomerName(),
 				customer.getMobileNumber(),
 				customer.getEmail()
+				
 			);
 			 
     }

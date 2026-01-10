@@ -9,6 +9,7 @@ import com.example.bank.models.Account;
 public class AccountMapper {
 
 	private final CustomerMapper customerMapper = new CustomerMapper();
+	private final BankBranchMapper bankBranchMapper = new BankBranchMapper();
 	
 	public AccountDto toDto(Account account){
 		AccountDto accountDto = new AccountDto();
@@ -17,7 +18,7 @@ public class AccountMapper {
 		accountDto.setActive(account.isActive());
 		accountDto.setId(account.getId());
 		accountDto.setCustomer(customerMapper.toDto(account.getCustomer()));
-
+		accountDto.setBranch(bankBranchMapper.toDto(account.getBankBranch()));
 		return accountDto;
 	}
 }

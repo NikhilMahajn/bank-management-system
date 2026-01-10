@@ -78,6 +78,12 @@ public class AccountController {
 		return accountService.getAccountStats();
 	}
 
+	@PreAuthorize("hasAnyRole('EMPLOYEE')")
+	@GetMapping("/branch-stats")
+	public AccountStatDto getAccountStatsByBranchHandler() {
+		return accountService.getAccountStatsBranch();
+	}
+
 	@PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE')")
 	@PostMapping("/block")
 	public ApiResponse blockAccountHandler(@RequestBody BlockAccountDto account) {

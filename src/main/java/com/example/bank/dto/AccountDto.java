@@ -17,4 +17,6 @@ public class AccountDto {
 	private boolean isActive;
 
 	private CustomerDto customer;
+
+	private BankBranchDto branch;
 }

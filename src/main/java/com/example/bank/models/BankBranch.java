@@ -37,6 +37,13 @@ public class BankBranch {
 	)
 	private List<Employee> employee = new ArrayList<>();
 
+	@OneToMany(
+		mappedBy = "bankBranch",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+	)
+	private List<Account> accounts = new ArrayList<>();
+
 
 	public void addEmployee(Employee newEmployee) {
 		employee.add(newEmployee);
@@ -46,6 +53,16 @@ public class BankBranch {
 	public void removeEmployee(Employee newEmployee) {
 		employee.remove(employee);
 		newEmployee.setBankBranch(null);
+	}
+
+	public void addAccount(Account newAccount) {
+		accounts.add(newAccount);
+		newAccount.setBankBranch(this);
+	}
+
+	public void removeAccount(Account newAccount) {
+		employee.remove(newAccount);
+		newAccount.setBankBranch(null);
 	}
 
 

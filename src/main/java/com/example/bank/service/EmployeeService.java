@@ -6,10 +6,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.bank.dto.ApiResponse;
 import com.example.bank.dto.CustomerDto;
 import com.example.bank.dto.EmployeeDto;
 import com.example.bank.dto.EmployeeRequestDto;
+import com.example.bank.exceptions.ResourceNotFoundException;
 import com.example.bank.mapper.EmployeeMapper;
+import com.example.bank.models.BankBranch;
 import com.example.bank.models.Employee;
 import com.example.bank.models.Role;
 import com.example.bank.repositories.EmployeeRepository;
@@ -28,6 +31,7 @@ public class EmployeeService {
 	private JwtService jwtService;
 
 	private PasswordEncoder passwordEncoder;
+
 
 	public EmployeeService(
 			EmployeeRepository employeeRepository,
@@ -66,9 +70,28 @@ public class EmployeeService {
 
 	}
 
+	@Transactional
+	public void removeEmployee(Long employeeId) {
+
+		Employee employee = employeeRepository.findById(employeeId)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
+
+
+		jwtService.removeUser(employee.getEmail());
+		employeeRepository.delete(employee);
+	}
+
+
 	public List<EmployeeDto> getAllEmployee(){
 		List<Employee> employees = employeeRepository.findAll();
 		return employees.stream().map(employeeMapper::toDto).toList();
+	}
+
+	public Employee getEmployeeById(Long id){
+		return employeeRepository.findById(id).orElseThrow(
+			() -> new ResourceNotFoundException("Employee Not found")
+	
+	);
 	}
 
 
