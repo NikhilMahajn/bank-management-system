@@ -443,13 +443,6 @@ Once the application is running, access the interactive API documentation:
 - `PUT /api/employees/{id}` - Update employee
 - `GET /api/employees/{id}/customers` - Get employee's customers
 
-## Screenshots
-
-_Add screenshots of your Swagger UI, Postman collections, or API responses here_
-
-![Swagger API Documentation](./docs/screenshots/swagger-ui.png)
-![Database Schema](./docs/screenshots/database-schema.png)
-
 ## Contributing
 
 We welcome contributions to the Banking Management System! Please follow these steps:
