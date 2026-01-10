@@ -4,6 +4,8 @@
 
 ## [Live Link](https://bank-system-fe-seven.vercel.app/)
 
+# Credentials 
+user - admin, pass - admin@123
 ## Overview
 
 The Banking Management System Backend is a robust, enterprise-grade application that provides complete banking functionality through a well-structured REST API. It implements secure authentication, role-based authorization, and comprehensive transaction management. The system supports multiple user roles (Admin, Employee, Customer) with specific permissions and features for each role.
